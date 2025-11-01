@@ -71,8 +71,8 @@ BASE_ID=$(az sig image-version list \
 
 Run:
 ```bash
-packer init 02-update-base-image.pkr.hcl
-packer validate 02-update-base-image.pkr.hcl
+packer init -var "base_sig_image_id=$BASE_ID" 02-update-base-image.pkr.hcl
+packer validate -var "base_sig_image_id=$BASE_ID" 02-update-base-image.pkr.hcl
 packer build -var "base_sig_image_id=$BASE_ID" 02-update-base-image.pkr.hcl
 ```
 
