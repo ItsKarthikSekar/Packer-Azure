@@ -42,8 +42,10 @@ az login
 ### Step 2 - Create Resource Group and Shared Image Gallery
 
 ```bash
+# Create Resource Group
 az group create -n rg-packer-lab -l eastus2
 
+# Create Shared Image Gallery
 az sig create \
   --resource-group rg-packer-lab \
   --gallery-name packerGallery \
@@ -56,6 +58,7 @@ az sig create \
 ### Step 3 - Create the Image Definition (only once)
 
 ```bash
+# Create the Image Definition
 az sig image-definition create \
   -g rg-packer-lab -r packerGallery -i ubuntu-base \
   --publisher "CareerByteCode" --offer "UbuntuBase" --sku "24_04-lts-gen2" \
@@ -68,8 +71,13 @@ az sig image-definition create \
 
 ## Initiate, Validate, and Build Base Image
 ```bash
+# Initiate
 packer init .
+
+# Validate
 packer validate -var-file=default.pkrvars.hcl -only=azure-arm.base .
+
+# Build
 packer build -var-file=default.pkrvars.hcl -only=azure-arm.base .
 ```
 
@@ -92,8 +100,13 @@ BASE_ID=$(az sig image-version list \
 
 ### Step 2 - Run the below commands to validate and build the new image
 ```bash
-packer validate -var="base_sig_image_id=$BASE_ID" -var-file=default.pkrvars.hcl -only=azure-arm.update .
-packer build -var="base_sig_image_id=$BASE_ID" -var-file=default.pkrvars.hcl -only=azure-arm.update .
+# Validate
+packer validate -var="base_sig_image_id=$BASE_ID" \
+  -var-file=default.pkrvars.hcl -only=azure-arm.update .
+
+# Build
+packer build -var="base_sig_image_id=$BASE_ID" \
+  -var-file=default.pkrvars.hcl -only=azure-arm.update .
 ```
 
 ✅ Result: `ubuntu-base:1.1.0` - a new version of the same image with Docker installed.
