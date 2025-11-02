@@ -1,27 +1,14 @@
-packer {
-  required_plugins {
-    azure = {
-      source  = "github.com/hashicorp/azure"
-      version = ">= 2.0.0"
-    }
-  }
-}
-
 variable "base_sig_image_id" {
   type = string
   default = ""  
 }
 
-locals {
-  version = "1.1.${formatdate("YYMM", timestamp())}"
-}
-
-source "azure-arm" "new-build" {
+source "azure-arm" "update" {
   use_azure_cli_auth = true
 
-  location  = "eastus2"
-  vm_size   = "Standard_B2ms"
-  os_type   = "Linux"
+  location  = var.location
+  vm_size   = var.vm_size
+  os_type   = var.os_type
 
   # Import the base image from the shared image gallery
   shared_image_gallery {
@@ -30,18 +17,18 @@ source "azure-arm" "new-build" {
 
   # Publish the new application image
   shared_image_gallery_destination {
-    resource_group      = "rg-packer-lab"
-    gallery_name        = "packerGallery"
-    image_name          = "ubuntu-base"
-    image_version       = local.version
-    replication_regions = ["eastus2"]
+    resource_group      = var.resource_group_name
+    gallery_name        = var.gallery_name
+    image_name          = var.image_name
+    image_version       = var.image_version
+    replication_regions = [var.location]
   }
 
-  temp_resource_group_name = "rg-packer-temp"
+  temp_resource_group_name = var.temp_resource_group_name
 }
 
 build {
-  sources = ["source.azure-arm.new-build"]
+  sources = ["source.azure-arm.update"]
 
   provisioner "shell" {
     script = "scripts/update-base.sh"
