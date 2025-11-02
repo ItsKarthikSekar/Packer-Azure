@@ -4,8 +4,8 @@
 
 You only need:
 
-- Azure CLI installed (`az version`)
-- Packer 1.14 or later (`packer version`)
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) (Latest version)
+- [Packer](https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli) (Latest version)
 - Azure login access (`az login`)
 
 Optional: a Service Principal if you want to run this from pipelines.
